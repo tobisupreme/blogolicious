@@ -1,0 +1,4 @@
+node_modules
+.env
+.eslintignore
+.eslintrc.js
