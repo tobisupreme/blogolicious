@@ -33,8 +33,8 @@ describe('Creating a blog', () => {
     const blogsBefore = await helper.articlesInDb()
 
     const response = await api
-      .set('Authorization', `Bearer ${token}`)
       .post('/api/blog')
+      .set('Authorization', `Bearer ${token}`)
       .send(helper.articleObject(`Article by ${user}`))
       .expect(201)
       .expect('Content-Type', /application\/json/)
