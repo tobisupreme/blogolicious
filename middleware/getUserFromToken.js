@@ -6,15 +6,14 @@ module.exports = async (req, res, next) => {
     const userFromToken = jwt.verify(req.token, process.env.SECRET)
     const user = await User.findById(userFromToken.id)
     if (!user) {
-      return res.status(403).json({
-        error: 'invalid token'
-      })
+      throw new Error()
     }
 
     // add user to request object
     req.user = user
     next()
   } catch (err) {
+    err.source = 'jwt middleware error'
     next(err)
   }
 }

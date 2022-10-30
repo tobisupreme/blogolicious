@@ -3,15 +3,14 @@ module.exports = (req, res, next) => {
     const authorization = req.get('authorization')
 
     if (!(authorization && authorization.toLowerCase().startsWith('bearer'))) {
-      return res.status(400).json({
-        error: 'invalid token',
-      })
+      throw new Error()
     }
 
     // if signing in with bearer token
     req.token = authorization.substring(7)
     next()
   } catch (err) {
+    err.source = 'jwt middleware error'
     next(err)
   }
 }
