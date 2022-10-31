@@ -164,6 +164,33 @@ describe('GET request to /api/blog', () => {
 
     expect(articleViewed.read_count).toBe(articleToView.read_count + 2)
   })
+
+  it('returns a maximum of 20 blogs per page', async () => {
+    const response = await api
+      .get('/api/blog')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body.data.length).toBe(20)
+  })
+
+  it('returns n blogs per page and a maximum of 20 blogs per page', async () => {
+    let size = 9
+    const response = await api
+      .get(`/api/blog?size=${size}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body.data.length).toBe(size)
+
+    size = 90
+    const response2 = await api
+      .get(`/api/blog?size=${size}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response2.body.data.length).toBe(20)
+  })
 })
 
 afterAll(async () => {
