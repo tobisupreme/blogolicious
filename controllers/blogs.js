@@ -47,6 +47,7 @@ const getPublishedBlog = async (req, res, next) => {
   try {
     const { id } = req.params
     const blog = await Blog.findById(id)
+      .populate('author', { username: 1 })
 
     if (blog.state !== 'published') {
       return res.status(403).json({
