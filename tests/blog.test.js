@@ -110,13 +110,33 @@ describe('GET request to /api/blog when', () => {
     const articleToView = articlesAtStart[0]
 
     const resultArticle = await api
-      .get(`/api/blog/${articleToView.id}`)
+      .get(`/api/blog/${articleToView._id}`)
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
     const processedArticleToView = JSON.parse(JSON.stringify(articleToView))
 
-    expect(resultArticle.body.data).toEqual(processedArticleToView)
+    expect(resultArticle.body.data.title).toEqual(processedArticleToView.title)
+    expect(resultArticle.body.data.body).toEqual(processedArticleToView.body)
+    expect(resultArticle.body.data.tags).toEqual(processedArticleToView.tags)
+    expect(resultArticle.body.data._id).toEqual(processedArticleToView._id)
+  })
+
+  it('requested by ID should return the author information', async () => {
+    const articlesAtStart = await helper.articlesInDb()
+    const users = await helper.usersInDb()
+    const user1 = users[0]
+
+    const articleToView = articlesAtStart[0]
+
+    const resultArticle = await api
+      .get(`/api/blog/${articleToView._id}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const authorOfArticle = resultArticle.body.data.author
+    expect(authorOfArticle.username).toBe(user1.username)
+    expect(authorOfArticle.id).toBe(user1.id)
   })
 })
 
