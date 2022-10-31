@@ -17,7 +17,7 @@ const login = async (username) => {
   token = response.body
 }
 
-beforeEach(async () => {
+beforeAll(async () => {
   await User.deleteMany({})
   await Blog.deleteMany({})
 
@@ -77,8 +77,8 @@ describe('Creating a blog', () => {
   })
 })
 
-describe('GET request to /api/blog when', () => {
-  it('not logged in should be able to get a list of published blogs', async () => {
+describe('GET request to /api/blog', () => {
+  it('when not logged in should be able to get a list of published blogs', async () => {
     const response = await api
       .get('/api/blog')
       .expect(200)
@@ -89,7 +89,7 @@ describe('GET request to /api/blog when', () => {
     expect(response.body.data[0]).not.toHaveProperty('body')
   })
 
-  it('logged in should be able to get a list of published blogs', async () => {
+  it('when logged in should be able to get a list of published blogs', async () => {
     const user = 'user1'
     await login(user)
 
@@ -104,7 +104,7 @@ describe('GET request to /api/blog when', () => {
     expect(response.body.data[0]).not.toHaveProperty('body')
   })
 
-  it('requested by ID should be able to get a published blog', async () => {
+  it('when requested by ID should be able to get a published blog', async () => {
     const articlesAtStart = await helper.articlesInDb()
 
     const articleToView = articlesAtStart[0]
@@ -122,7 +122,7 @@ describe('GET request to /api/blog when', () => {
     expect(resultArticle.body.data._id).toEqual(processedArticleToView._id)
   })
 
-  it('requested by ID should return the author information', async () => {
+  it('when requested by ID should return the author information', async () => {
     const articlesAtStart = await helper.articlesInDb()
     const users = await helper.usersInDb()
     const user1 = users[0]
@@ -137,6 +137,32 @@ describe('GET request to /api/blog when', () => {
     const authorOfArticle = resultArticle.body.data.author
     expect(authorOfArticle.username).toBe(user1.username)
     expect(authorOfArticle.id).toBe(user1.id)
+  })
+
+  it('when requested by ID should increase the read_count by 1', async () => {
+    const articlesAtStart = await helper.articlesInDb()
+
+    const articleToView = articlesAtStart[0]
+
+    await api
+      .get(`/api/blog/${articleToView._id}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const articlesAtMid = await helper.articlesInDb()
+    const articleViewedAtMid = articlesAtMid[0]
+
+    expect(articleViewedAtMid.read_count).toBe(articleToView.read_count + 1)
+
+    await api
+      .get(`/api/blog/${articleToView._id}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const articlesAtEnd = await helper.articlesInDb()
+    const articleViewed = articlesAtEnd[0]
+
+    expect(articleViewed.read_count).toBe(articleToView.read_count + 2)
   })
 })
 
