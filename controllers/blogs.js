@@ -26,6 +26,24 @@ const createBlog = async (req, res, next) => {
   }
 }
 
+const getListOfPublishedBlogs = async (req, res, next) => {
+  try {
+    const blogs = await Blog
+      .find({ state: 'published' })
+      .select({ title: 1 })
+      .populate('author', { username: 1 })
+
+    return res.json({
+      status: true,
+      data: blogs
+    })
+  } catch (err) {
+    err.source = 'get published blogs controller'
+    next(err)
+  }
+}
+
 module.exports = {
   createBlog,
+  getListOfPublishedBlogs,
 }
