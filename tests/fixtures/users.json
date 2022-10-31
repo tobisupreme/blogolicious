@@ -1,0 +1,47 @@
+[
+  {
+    "_id": "635eccc34dc4ea83291cf8de",
+    "firstName": "user",
+    "lastName": "1",
+    "username": "user1",
+    "email": "user1@mail.com",
+    "password": "Password0!",
+    "__v": 0
+  },
+  {
+    "_id": "635eccc34dc4ea83291cf8dc",
+    "firstName": "user",
+    "lastName": "2",
+    "username": "user2",
+    "email": "user2@mail.com",
+    "password": "Password0!",
+    "__v": 0
+  },
+  {
+    "_id": "635eccc34dc4ea83291cf8da",
+    "firstName": "user",
+    "lastName": "3",
+    "username": "user3",
+    "email": "user3@mail.com",
+    "password": "Password0!",
+    "__v": 0
+  },
+  {
+    "_id": "635eccc24dc4ea83291cf8d8",
+    "firstName": "user",
+    "lastName": "4",
+    "username": "user4",
+    "email": "user4@mail.com",
+    "password": "Password0!",
+    "__v": 0
+  },
+  {
+    "_id": "635eccc24dc4ea83291cf8d6",
+    "firstName": "user",
+    "lastName": "5",
+    "username": "user5",
+    "email": "user5@mail.com",
+    "password": "Password0!",
+    "__v": 0
+  }
+]

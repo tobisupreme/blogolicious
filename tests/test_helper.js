@@ -21,6 +21,14 @@ const createUserObject = (n) => {
   }
 }
 
+const initialUsers = () => {
+  return require('./fixtures/users.json')
+}
+
+const initialArticles = () => {
+  return require('./fixtures/articles.json')
+}
+
 const articleObject = (title) => {
   return {
     title,
@@ -35,4 +43,6 @@ module.exports = {
   createUserObject,
   articleObject,
   articlesInDb,
+  initialUsers,
+  initialArticles,
 }
