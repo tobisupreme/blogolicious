@@ -56,6 +56,10 @@ const getPublishedBlog = async (req, res, next) => {
       })
     }
 
+    // update blog read count
+    blog.read_count += 1
+    await blog.save()
+
     return res.json({
       status: true,
       data: blog
