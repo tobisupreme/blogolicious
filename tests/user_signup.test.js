@@ -35,7 +35,6 @@ describe('post request to api/signup', () => {
     const usersInDbAfter = await helper.usersInDb()
     expect(usersInDbBefore.length).toBe(usersInDbAfter.length - 1)
 
-    expect(Object.keys(response.body.data)).toContain('id')
     expect(Object.keys(response.body.data)).not.toContain('password')
   })
 
