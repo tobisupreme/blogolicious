@@ -32,9 +32,17 @@ const getListOfPublishedBlogs = async (req, res, next) => {
       .find({ state: 'published' })
       .select({ title: 1 })
       .populate('author', { username: 1 })
+      .skip(req.pagination.start)
+      .limit(req.pagination.sizePerPage)
+
+    const pageInfo = {}
+    pageInfo.currentPage = req.pagination.page
+    if (req.pagination.previousPage) pageInfo.previousPage = req.pagination.previousPage
+    if (req.pagination.nextPage) pageInfo.nextPage = req.pagination.nextPage
 
     return res.json({
       status: true,
+      pageInfo,
       data: blogs
     })
   } catch (err) {
