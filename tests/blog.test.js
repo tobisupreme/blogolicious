@@ -77,10 +77,11 @@ describe('Creating a blog', () => {
   })
 })
 
-describe('GET request to /api/blog', () => {
+describe('GET request to /api/blog/g', () => {
+  const url = '/api/blog/g'
   it('when not logged in should be able to get a list of published blogs', async () => {
     const response = await api
-      .get('/api/blog')
+      .get(url)
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
@@ -94,7 +95,7 @@ describe('GET request to /api/blog', () => {
     await login(user)
 
     const response = await api
-      .get('/api/blog')
+      .get(url)
       .set('Authorization', `Bearer ${token.token}`)
       .expect(200)
       .expect('Content-Type', /application\/json/)
@@ -110,7 +111,7 @@ describe('GET request to /api/blog', () => {
     const articleToView = articlesAtStart[0]
 
     const resultArticle = await api
-      .get(`/api/blog/${articleToView._id}`)
+      .get(`${url}/${articleToView._id}`)
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
@@ -130,7 +131,7 @@ describe('GET request to /api/blog', () => {
     const articleToView = articlesAtStart[0]
 
     const resultArticle = await api
-      .get(`/api/blog/${articleToView._id}`)
+      .get(`${url}/${articleToView._id}`)
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
@@ -145,7 +146,7 @@ describe('GET request to /api/blog', () => {
     const articleToView = articlesAtStart[0]
 
     await api
-      .get(`/api/blog/${articleToView._id}`)
+      .get(`${url}/${articleToView._id}`)
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
@@ -155,7 +156,7 @@ describe('GET request to /api/blog', () => {
     expect(articleViewedAtMid.read_count).toBe(articleToView.read_count + 1)
 
     await api
-      .get(`/api/blog/${articleToView._id}`)
+      .get(`${url}/${articleToView._id}`)
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
@@ -167,7 +168,7 @@ describe('GET request to /api/blog', () => {
 
   it('returns a maximum of 20 blogs per page', async () => {
     const response = await api
-      .get('/api/blog')
+      .get(url)
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
@@ -177,7 +178,7 @@ describe('GET request to /api/blog', () => {
   it('returns n blogs per page and a maximum of 20 blogs per page', async () => {
     let size = 9
     const response = await api
-      .get(`/api/blog?size=${size}`)
+      .get(`${url}?size=${size}`)
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
@@ -185,7 +186,7 @@ describe('GET request to /api/blog', () => {
 
     size = 90
     const response2 = await api
-      .get(`/api/blog?size=${size}`)
+      .get(`${url}?size=${size}`)
       .expect(200)
       .expect('Content-Type', /application\/json/)
 

@@ -12,10 +12,10 @@ module.exports = async (req, res, next) => {
     if (!isNaN(sizeFromQuery) && sizeFromQuery > 0 && sizeFromQuery < 21) size = sizeFromQuery
 
     let numberOfResults
-    if (req.url.split('?')[0] === '/') {
+    if (req.url.split('?')[0] === '/g') {
       numberOfResults = await Blog.find({ state: 'published' }).countDocuments().exec()
-    } else if (req.url.split('?')[0].length === 25) {
-      numberOfResults = await Blog.find({ state: 'published' }).countDocuments().exec()
+    } else {
+      numberOfResults = await Blog.find(req.findFilter).countDocuments().exec()
     }
 
     const totalPages = Math.ceil(numberOfResults / size)
