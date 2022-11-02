@@ -1,0 +1,43 @@
+/*Get all blog posts*/
+exports.getAllPost = async (req, res) => {
+  //FILTERING
+  let queryObj = { ...req.query }
+  const excludedFields = ['page', 'sort', 'limit', 'fields', 'author']
+  excludedFields.forEach((el) => delete queryObj[el])
+
+  /*Persist user input to lowercase */
+  queryObj = Object.fromEntries(Object.entries(queryObj).map(([key, value]) => [key, value.toLowerCase()]))
+  const sortBy = req.query.sort ? req.query.sort.split(',').join(' ') : '-createdAt'
+
+  /*Query build up*/
+  if (req.query.author) {
+    queryObj.author = req.query.author
+  }
+  if (req.query.tags) {
+    queryObj.tags = { $in: [req.query.tags] }
+  }
+  queryObj.state = { $eq: 'published' }
+
+  /*Pagination*/
+  const page = +req.query.page || 1
+  const limit = +req.query.limit || 20
+  const skip = (page - 1) * limit
+
+  /*Querying posts*/
+  const post = await Post.find(queryObj).sort(sortBy).skip(skip).limit(limit)
+
+  /*Success response*/
+  return res.status(200).json({
+    status: true,
+    page: page,
+    numberOfPosts: post.length,
+    posts: post,
+  })
+}
+
+/*
+PORT=3456
+DBURI=mongodb://localhost/blogolicious
+TEST_DBURI=mongodb://localhost/blogolicious_test
+SECRET=jS7o6Vq@Yu9CRGEo$E%giWd@3cGeXbCQaxVy8k6Ba&$%4eXQAaWmgreQ9Z$esqP5xQv3!Y7w$dFD4bLBWf7wTZ*QWSC$QMaE3D5Gqc@S4VExMkxynKBet76AQ!gcDo
+*/

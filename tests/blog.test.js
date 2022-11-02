@@ -191,6 +191,27 @@ describe('GET request to /api/blog', () => {
 
     expect(response2.body.data.length).toBe(20)
   })
+
+  it('should be searchable by author, title and tags', async () => {
+    const response = await api
+      .get('/api/blog?author=user1&size=13')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const content = response.body.data.map(blog => blog.author.username)
+    expect(content.length).toBe(13)
+
+    for (const item of content) {
+      expect(item).toBe('user1')
+    }
+
+    const response2 = await api
+      .get('/api/blog?title=qui%20est%20esse')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response2.body.data.title).toBe('qui est esse')
+  })
 })
 
 afterAll(async () => {

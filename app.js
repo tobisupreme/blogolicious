@@ -9,6 +9,7 @@ const app = express()
 
 // connect to db
 require('./middleware/db')(CONFIG.DBURI)
+// require('./utils/insertMany')()
 
 // parse information from request
 app.use(express.json())
