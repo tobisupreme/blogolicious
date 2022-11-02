@@ -36,9 +36,11 @@ const getListOfPublishedBlogs = async (req, res, next) => {
       .limit(req.pagination.sizePerPage)
 
     const pageInfo = {}
-    pageInfo.currentPage = req.pagination.page
+    pageInfo.totalResults = req.pagination.numberOfResults
     if (req.pagination.previousPage) pageInfo.previousPage = req.pagination.previousPage
+    pageInfo.currentPage = req.pagination.currentPage
     if (req.pagination.nextPage) pageInfo.nextPage = req.pagination.nextPage
+    pageInfo.totalPages = req.pagination.totalPages
 
     return res.json({
       status: true,

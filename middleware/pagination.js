@@ -12,7 +12,7 @@ module.exports = async (req, res, next) => {
     if (!isNaN(sizeFromQuery) && sizeFromQuery > 0 && sizeFromQuery < 21) size = sizeFromQuery
 
     let numberOfResults
-    if (req.url.split('?')[0] === '/') {
+    if (req.url.split('?')[0] === '/g') {
       numberOfResults = await Blog.find({ state: 'published' }).countDocuments().exec()
     } else if (req.url.split('?')[0].length === 25) {
       numberOfResults = await Blog.find({ state: 'published' }).countDocuments().exec()
@@ -28,6 +28,10 @@ module.exports = async (req, res, next) => {
         page: page - 1,
         limit: size,
       }
+    }
+    req.pagination.currentPage = {
+      page,
+      limit: size,
     }
     if (end < numberOfResults) {
       req.pagination.nextPage = {
