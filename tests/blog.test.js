@@ -33,7 +33,6 @@ beforeAll(async () => {
 })
 
 describe('Creating a blog', () => {
-
   it('should work with valid token', async () => {
     const user = 'user3'
     await login(user)
@@ -65,10 +64,7 @@ describe('Creating a blog', () => {
 
   it('should return an error if no valid tokens are provided', async () => {
     const blogsBefore = await helper.articlesInDb()
-    const response = await api
-      .post('/api/blog')
-      .send(helper.articleObject('Article by no registered user'))
-      .expect(403)
+    const response = await api.post('/api/blog').send(helper.articleObject('Article by no registered user')).expect(403)
 
     expect(response.body.status).toBe(false)
 
@@ -85,7 +81,7 @@ describe('GET request to /api/blog/g', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
-    const blogStates = response.body.data.map(blog => blog.state)
+    const blogStates = response.body.data.map((blog) => blog.state)
     expect(blogStates).not.toContain('draft')
     expect(response.body.data[0]).not.toHaveProperty('body')
   })
@@ -100,7 +96,7 @@ describe('GET request to /api/blog/g', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
-    const blogStates = response.body.data.map(blog => blog.state)
+    const blogStates = response.body.data.map((blog) => blog.state)
     expect(blogStates).not.toContain('draft')
     expect(response.body.data[0]).not.toHaveProperty('body')
   })
@@ -191,6 +187,87 @@ describe('GET request to /api/blog/g', () => {
       .expect('Content-Type', /application\/json/)
 
     expect(response2.body.data.length).toBe(20)
+  })
+
+  it('returns blogs by a specific author', async () => {
+    let author = 'user1'
+    const response = await api
+      .get(`${url}?author=${author}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const authorArray = response.body.data.map((blog) => blog.author.username)
+    for (const blogAuthor of authorArray) {
+      expect(blogAuthor).toBe(author)
+    }
+
+    author = 'user4'
+    const response2 = await api
+      .get(`${url}?author=${author}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const author2Array = response2.body.data.map((blog) => blog.author.username)
+    for (const blogAuthor of author2Array) {
+      expect(blogAuthor).toBe(author)
+    }
+  })
+
+  it('returns a blog with a specific title', async () => {
+    let title = 'at nam consequatur ea labore ea harum'
+    const response = await api
+      .get(`${url}?title=${title}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body.data[0]._id).toBe('635f9d229a39346186b332cf')
+    expect(response.body.data[0].title).toBe(title)
+  })
+})
+
+/**
+ * The owner of the blog should be able to get a list of their blogs.
+ * The endpoint should be paginated
+ * It should be filterable by state
+ */
+describe('The owner of the blog', () => {
+  let user
+  it('should be able to get a list of their blogs', async () => {
+    user = 'user1'
+    await login(user)
+
+    const response = await api
+      .get('/api/blog/p/')
+      .set('Authorizaion', `Bearer ${token.token}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const authorArray = response.body.data.map((blog) => blog.author.username)
+    for (const author of authorArray) {
+      expect(author).toBe(user)
+    }
+  })
+
+  it('should be able to get a list of their published blogs', async () => {
+    const response = await api
+      .get('/api/blog/p?state=published')
+      .set('Authorizaion', `Bearer ${token.token}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const statesArray = response.body.data.map((blog) => blog.state)
+    expect(statesArray).not.toContain('draft')
+  })
+
+  it('should be able to get a list of their blogs in draft state', async () => {
+    const response = await api
+      .get('/api/blog/p?state=draft')
+      .set('Authorizaion', `Bearer ${token.token}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const statesArray = response.body.data.map((blog) => blog.state)
+    expect(statesArray).not.toContain('published')
   })
 })
 
