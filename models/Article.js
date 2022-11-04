@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const { readingTime } = require('../utils/utils')
 
 const articleSchema = new mongoose.Schema(
   {
@@ -31,6 +32,20 @@ const articleSchema = new mongoose.Schema(
   },
   { timestamps: true }
 )
+
+// calculate reading time before saving document
+articleSchema.pre('save', function (next) {
+  let article = this
+
+  // do nothing if the article body is unchanged
+  if (!article.isModified('body')) return next()
+
+  // calculate the time in minutes
+  const timeToRead = readingTime(this.body)
+
+  article.reading_time = timeToRead
+  next()
+})
 
 articleSchema.set('toJSON', {
   transform: (document, returnedObject) => {

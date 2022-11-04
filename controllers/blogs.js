@@ -1,5 +1,4 @@
 const Blog = require('../models/Article')
-const { readingTime } = require('../utils/utils')
 
 const createBlog = async (req, res, next) => {
   try {
@@ -12,7 +11,6 @@ const createBlog = async (req, res, next) => {
       tags,
       author: req.user._id,
       body,
-      reading_time: readingTime(body),
       owner: req.user.username,
     })
     // save to database
