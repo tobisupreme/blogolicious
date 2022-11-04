@@ -13,6 +13,9 @@ const articleSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
+    owner: {
+      type: String,
+    },
     state: {
       type: String,
       default: 'draft',
@@ -28,5 +31,12 @@ const articleSchema = new mongoose.Schema(
   },
   { timestamps: true }
 )
+
+articleSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    delete returnedObject.__v
+    delete returnedObject.owner
+  },
+})
 
 module.exports = mongoose.model('Article', articleSchema)

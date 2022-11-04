@@ -12,10 +12,16 @@ const createBlog = async (req, res, next) => {
       tags,
       author: req.user._id,
       body,
-      reading_time: readingTime(body)
+      reading_time: readingTime(body),
+      owner: req.user.username,
     })
     // save to database
     const createdBlog = await newBlog.save()
+
+    // save blog ID to user document
+    req.user.articles = req.user.articles.concat(createdBlog._id)
+    await req.user.save()
+
     // return response
     return res.status(201).json({
       status: true,

@@ -24,6 +24,12 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  articles: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Article',
+    },
+  ],
 })
 
 // encrypt password before saving document
