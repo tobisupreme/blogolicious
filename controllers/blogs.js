@@ -32,24 +32,21 @@ const createBlog = async (req, res, next) => {
   }
 }
 
-const getListOfPublishedBlogs = async (req, res, next) => {
+const getListOfBlogs = async (req, res, next) => {
   try {
     const blogs = await Blog
-      .find({ state: 'published' })
-      .select({ title: 1 })
+      .find(req.findFilter)
+      .select({ title: 1, tags: 1 })
       .populate('author', { username: 1 })
       .skip(req.pagination.start)
       .limit(req.pagination.sizePerPage)
 
-    const pageInfo = {}
-    pageInfo.currentPage = req.pagination.page
-    if (req.pagination.previousPage) pageInfo.previousPage = req.pagination.previousPage
-    if (req.pagination.nextPage) pageInfo.nextPage = req.pagination.nextPage
+    const pageInfo = req.pageInfo
 
     return res.json({
       status: true,
       pageInfo,
-      data: blogs
+      data: blogs,
     })
   } catch (err) {
     err.source = 'get published blogs controller'
@@ -86,6 +83,6 @@ const getPublishedBlog = async (req, res, next) => {
 
 module.exports = {
   createBlog,
-  getListOfPublishedBlogs,
+  getListOfBlogs,
   getPublishedBlog,
 }
