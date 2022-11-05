@@ -3,7 +3,15 @@ const jwt = require('jsonwebtoken')
 
 module.exports = async (req, res, next) => {
   try {
-    const userFromToken = jwt.verify(req.token, process.env.SECRET)
+    // get bearer token from header
+    const authorization = req.get('authorization')
+    if (!(authorization && authorization.toLowerCase().startsWith('bearer'))) {
+      throw new Error()
+    }
+    const bearerToken = authorization.substring(7)
+
+    // decode bearer token
+    const userFromToken = jwt.verify(bearerToken, process.env.SECRET)
     const user = await User.findById(userFromToken.id)
     if (!user) {
       throw new Error()
