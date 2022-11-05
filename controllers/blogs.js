@@ -30,11 +30,11 @@ const createBlog = async (req, res, next) => {
   }
 }
 
-const getListOfBlogs = async (req, res, next) => {
+const getBlogs = async (req, res, next) => {
   try {
     const blogs = await Blog
       .find(req.findFilter)
-      .select({ title: 1, tags: 1 })
+      .select(req.fields)
       .populate('author', { username: 1 })
       .skip(req.pagination.start)
       .limit(req.pagination.sizePerPage)
@@ -52,16 +52,15 @@ const getListOfBlogs = async (req, res, next) => {
   }
 }
 
-const getPublishedBlog = async (req, res, next) => {
+const getBlog = async (req, res, next) => {
   try {
     const { id } = req.params
-    const blog = await Blog.findById(id)
-      .populate('author', { username: 1 })
+    const blog = await Blog.findById(id).populate('author', { username: 1 })
 
     if (blog.state !== 'published') {
       return res.status(403).json({
         status: false,
-        error: 'Requested article is not published'
+        error: 'Requested article is not published',
       })
     }
 
@@ -71,7 +70,7 @@ const getPublishedBlog = async (req, res, next) => {
 
     return res.json({
       status: true,
-      data: blog
+      data: blog,
     })
   } catch (err) {
     err.source = 'get published blog controller'
@@ -81,6 +80,6 @@ const getPublishedBlog = async (req, res, next) => {
 
 module.exports = {
   createBlog,
-  getListOfBlogs,
-  getPublishedBlog,
+  getBlogs,
+  getBlog,
 }

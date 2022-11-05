@@ -1,11 +1,11 @@
 const router = require('express').Router()
-const { createBlog, getListOfBlogs, getPublishedBlog } = require('../controllers/blogs')
-const apiFeatures = require('../middleware/apiFeatures')
+const { createBlog, getBlogs, getBlog } = require('../controllers/blogs')
+const { filterAndSort, filterByPublished, list } = require('../middleware/apiFeatures')
 const getUserFromToken = require('../middleware/verifyUser')
 const pagination = require('../middleware/pagination')
 
-router.route('/g').get(apiFeatures.filterBy, apiFeatures.orderBy, apiFeatures.setPublished, pagination, getListOfBlogs)
-router.route('/g/:id').get(getPublishedBlog)
+router.route('/').get(filterAndSort, filterByPublished, pagination, list, getBlogs)
+router.route('/:id').get(getBlog)
 
 // allow only requests with valid tokens
 router.use(getUserFromToken)
