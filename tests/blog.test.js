@@ -71,10 +71,30 @@ describe('Creating a blog', () => {
     const blogsAfter = await helper.articlesInDb()
     expect(blogsBefore.length).toBe(blogsAfter.length)
   })
+
+  it('should return an error if invalid details are supplied', async () => {
+    const user = 'user4'
+    await login(user)
+    const faultyArticle = helper.articleObject()
+    const blogsBefore = await helper.articlesInDb()
+
+    const response = await api
+      .post('/api/blog')
+      .set('Authorization', `Bearer ${token.token}`)
+      .send(faultyArticle)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body.status).toBe('fail')
+    expect(response.body).toHaveProperty('error')
+
+    const blogsAfter = await helper.articlesInDb()
+    expect(blogsBefore.length).toBe(blogsAfter.length)
+  })
 })
 
-describe('GET request to /api/blog/g', () => {
-  const url = '/api/blog/g'
+describe('GET request to /api/blog/', () => {
+  const url = '/api/blog'
   it('when not logged in should be able to get a list of published blogs', async () => {
     const response = await api
       .get(url)
@@ -231,27 +251,27 @@ describe('GET request to /api/blog/g', () => {
  * It should be filterable by state
  */
 describe('The owner of the blog', () => {
-  let user
+  const URL = '/api/blog'
   it('should be able to get a list of their blogs', async () => {
-    user = 'user1'
+    const user = 'user1'
     await login(user)
 
     const response = await api
-      .get('/api/blog/p/')
-      .set('Authorizaion', `Bearer ${token.token}`)
+      .get(`${URL}/p`)
+      .set('Authorization', `Bearer ${token.token}`)
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
     const authorArray = response.body.data.map((blog) => blog.author.username)
     for (const author of authorArray) {
-      expect(author).toBe(user)
+      expect(author.toLowerCase()).toBe(user.toLowerCase())
     }
   })
 
   it('should be able to get a list of their published blogs', async () => {
     const response = await api
-      .get('/api/blog/p?state=published')
-      .set('Authorizaion', `Bearer ${token.token}`)
+      .get(`${URL}/p?state=published`)
+      .set('Authorization', `Bearer ${token.token}`)
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
@@ -261,13 +281,135 @@ describe('The owner of the blog', () => {
 
   it('should be able to get a list of their blogs in draft state', async () => {
     const response = await api
-      .get('/api/blog/p?state=draft')
-      .set('Authorizaion', `Bearer ${token.token}`)
+      .get(`${URL}/p?state=draft`)
+      .set('Authorization', `Bearer ${token.token}`)
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
     const statesArray = response.body.data.map((blog) => blog.state)
     expect(statesArray).not.toContain('published')
+  })
+
+  /**
+   * The owner of the blog should be able to update the state of the
+   * blog to published
+   */
+  it('should be able to update the state of the blog to published', async () => {
+    // get article and it's author
+    const articles = await helper.articlesInDb()
+    const draftArticles = articles.filter(article => article.state === 'draft')
+    const articleToUpdate = helper.getRandomArrayElement(draftArticles)
+    const users = await helper.usersInDb()
+    const articleAuthor = users.find(user => user._id.toString() === articleToUpdate.author.toString()).username
+
+    // login
+    await login(articleAuthor)
+
+    const articleId = articleToUpdate._id.toString()
+    const response = await api
+      .patch(`${URL}/${articleId}`)
+      .set('Authorization', `Bearer ${token.token}`)
+      .send({ state: 'published' })
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body.data.state).toBe('published')
+
+    const updatedArticle = await api
+      .get(`${URL}/${articleId}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    expect(updatedArticle.body.data.state).toBe('published')
+  })
+
+  /**
+   * The owner of a blog should be able to edit the blog in draft or published state
+   */
+  it('should be able to edit the blog in draft or published state', async () => {
+    const articles = await helper.articlesInDb()
+    const articleToUpdate = helper.getRandomArrayElement(articles)
+    const users = await helper.usersInDb()
+    const articleAuthor = users.find((user) => user._id.toString() === articleToUpdate.author.toString()).username
+
+    // login
+    await login(articleAuthor)
+
+    const articleupdate = helper.articleObject(`This article is updated by ${articleAuthor}`)
+
+    const articleId = articleToUpdate._id.toString()
+    const response = await api
+      .put(`${URL}/${articleId}`)
+      .set('Authorization', `Bearer ${token.token}`)
+      .send(articleupdate)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body.data.state).toBe(articleToUpdate.state)
+  })
+
+  /**
+   * The owner of the blog should be able to delete the blog in draft or published state
+   */
+  it('should be able to delete the blog in draft or published state', async () => {
+    const articles = await helper.articlesInDb()
+    const articleToDelete = helper.getRandomArrayElement(articles)
+    const users = await helper.usersInDb()
+    const articleAuthor = users.find((user) => user._id.toString() === articleToDelete.author.toString()).username
+
+    // login
+    await login(articleAuthor)
+
+    const articleId = articleToDelete._id.toString()
+    const response = await api
+      .delete(`${URL}/${articleId}`)
+      .set('Authorization', `Bearer ${token.token}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body.status).toBe('success')
+
+    await api
+      .get(`${URL}/${articleId}`)
+      .expect(404)
+  })
+})
+
+describe('Logged in users', () => {
+  const URL = '/api/blog/'
+  it('can not delete other users\' blogs', async () => {
+    await login('user4')
+
+    const articleId = '635eccc34dc4ea83291cf8de'
+    await api
+      .delete(`${URL}/${articleId}`)
+      .set('Authorization', `Bearer ${token.token}`)
+      .expect(403)
+      .expect('Content-Type', /application\/json/)
+  })
+
+  it('can not update the state of other users\' blogs', async () => {
+    await login('user4')
+
+    const articleId = '635eccc34dc4ea83291cf8de'
+    await api
+      .patch(`${URL}/${articleId}`)
+      .set('Authorization', `Bearer ${token.token}`)
+      .send({ state: 'published' })
+      .expect(403)
+  })
+
+  it('can not edit other users\' blogs in draft or published state', async () => {
+    const user = 'user4'
+    await login(user)
+    const articleupdate = helper.articleObject(`This article is updated by ${user}`)
+
+    const articleId = '635eccc34dc4ea83291cf8de'
+    await api
+      .put(`${URL}/${articleId}`)
+      .set('Authorization', `Bearer ${token.token}`)
+      .send(articleupdate)
+      .expect(403)
   })
 })
 
