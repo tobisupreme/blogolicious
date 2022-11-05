@@ -15,6 +15,14 @@ module.exports = (error, req, res, next) => {
     })
   }
 
+  if (error.source === 'creating a blog') {
+    return res.status(400).json({
+      status: 'fail',
+      error: 'Please provide valid details',
+      additionalInfo: error,
+    })
+  }
+
   res.status(400).json({
     error: error.message,
   })

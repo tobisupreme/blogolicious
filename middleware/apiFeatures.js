@@ -58,7 +58,13 @@ const list = (req, res, next) => {
   }
 
   // set fields to title and tags
-  req.fields === undefined ? req.fields = fields : req.fields = Object.assign(req.fields, fields)
+  req.fields === undefined ? (req.fields = fields) : (req.fields = Object.assign(req.fields, fields))
+  next()
+}
+
+const setUserFilter = (req, res, next) => {
+  const owner = new RegExp(`${req.user.username}`, 'gi')
+  req.findFilter.owner = owner
   next()
 }
 
@@ -66,4 +72,5 @@ module.exports = {
   filterByPublished,
   filterAndSort,
   list,
+  setUserFilter,
 }
