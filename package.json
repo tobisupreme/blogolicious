@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "NODE_ENV=test jest --detectOpenHandles",
+    "test": "NODE_ENV=test jest --detectOpenHandles --coverage",
     "start": "NODE_ENV=production node server.js",
     "dev": "NODE_ENV=development nodemon server.js"
   },
