@@ -15,6 +15,16 @@ require('./middleware/db')(CONFIG.DBURI)
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
+// set info response
+app.get('/', (req, res) => {
+  res.json({
+    status: 'status',
+    message: 'Visit the link below for details about usage',
+    link: 'https://github.com/tobisupreme/blogolicious#usage',
+    readme: 'https://github.com/tobisupreme/blogolicious#readme',
+  })
+})
+
 app.use('/api/signup', signup)
 app.use('/api/login', login)
 app.use('/api/blog', blog)
