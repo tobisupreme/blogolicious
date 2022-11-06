@@ -22,12 +22,12 @@ const createBlog = async (req, res, next) => {
 
     // return response
     return res.status(201).json({
-      status: true,
+      status: 'success',
       data: createdBlog,
     })
-  } catch (e) {
-    e.source = 'creating a blog'
-    next(e)
+  } catch (err) {
+    err.source = 'creating a blog'
+    next(err)
   }
 }
 
@@ -44,7 +44,7 @@ const getBlogs = async (req, res, next) => {
     const pageInfo = req.pageInfo
 
     return res.json({
-      status: true,
+      status: 'success',
       pageInfo,
       data: blogs,
     })
@@ -69,7 +69,7 @@ const getBlog = async (req, res, next) => {
     if (blog.state !== 'published') {
       const response = (res) => {
         return res.status(403).json({
-          status: false,
+          status: 'fail',
           error: 'Requested article is not published',
         })
       }
@@ -85,7 +85,7 @@ const getBlog = async (req, res, next) => {
     await blog.save()
 
     return res.json({
-      status: true,
+      status: 'success',
       data: blog,
     })
   } catch (err) {
@@ -112,7 +112,7 @@ const updateBlogState = async (req, res, next) => {
     }
 
     return res.json({
-      status: 'ok',
+      status: 'success',
       data: blog
     })
   } catch (err) {
@@ -137,7 +137,7 @@ const updateBlog = async (req, res, next) => {
     }
 
     return res.json({
-      status: 'ok',
+      status: 'success',
       data: blog
     })
   } catch (err) {

@@ -66,7 +66,7 @@ describe('Creating a blog', () => {
     const blogsBefore = await helper.articlesInDb()
     const response = await api.post('/api/blog').send(helper.articleObject('Article by no registered user')).expect(403)
 
-    expect(response.body.status).toBe(false)
+    expect(response.body.status).toBe('fail')
 
     const blogsAfter = await helper.articlesInDb()
     expect(blogsBefore.length).toBe(blogsAfter.length)

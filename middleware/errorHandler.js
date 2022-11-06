@@ -10,7 +10,7 @@ module.exports = (error, req, res, next) => {
 
   if (error.source === 'jwt middleware error') {
     return res.status(403).json({
-      status: false,
+      status: 'fail',
       error: 'invalid token',
     })
   }
@@ -24,6 +24,7 @@ module.exports = (error, req, res, next) => {
   }
 
   res.status(400).json({
+    status: 'fail',
     error: error.message,
   })
 

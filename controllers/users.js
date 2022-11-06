@@ -16,11 +16,11 @@ const createUser = async (req, res, next) => {
     const createdUser = await newUser.save()
     // return response
     return res.status(201).json({
-      status: true,
+      status: 'success',
       data: createdUser,
     })
-  } catch (e) {
-    next(e)
+  } catch (err) {
+    next(err)
   }
 }
 
