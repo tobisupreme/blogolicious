@@ -8,6 +8,13 @@ module.exports = (error, req, res, next) => {
     })
   }
 
+  if (error.name === 'TokenExpiredError') {
+    return res.status(401).json({
+      status: 'fail',
+      error: 'token expired'
+    })
+  }
+
   if (error.source === 'jwt middleware error') {
     return res.status(403).json({
       status: 'fail',
@@ -20,6 +27,13 @@ module.exports = (error, req, res, next) => {
       status: 'fail',
       error: 'Please provide valid details',
       additionalInfo: error,
+    })
+  }
+
+  if (error.name === 'CastError') {
+    return res.status(400).json({
+      status: 'fail',
+      error: 'malformatted id'
     })
   }
 
