@@ -16,5 +16,6 @@ router.route('/:id')
   .get(attachUser, blogController.getBlog)
   .patch(getUserFromToken, isCreator, blogController.updateBlogState)
   .put(getUserFromToken, isCreator, blogController.updateBlog)
+  .delete(getUserFromToken, isCreator, blogController.deleteBlog)
 
 module.exports = router
