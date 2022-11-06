@@ -5,6 +5,7 @@ const unknownEndpoint = require('./middleware/unknownEndpoint')
 const signup = require('./routes/signup')
 const login = require('./controllers/login')
 const blog = require('./routes/blog')
+const { requestLogger } = require('./utils/logger')
 
 const app = express()
 
@@ -14,6 +15,9 @@ require('./middleware/db')(CONFIG.DBURI)
 // parse information from request
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
+
+// use request logger
+app.use(requestLogger)
 
 // set info response
 app.get('/', (req, res) => {

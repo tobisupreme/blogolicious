@@ -1,7 +1,11 @@
+const logger = require('../utils/logger')
+
 /**
  * Error handler middleware
  */
 module.exports = (error, req, res, next) => {
+  logger.error(error)
+
   if (error.message === 'data and hash arguments required') {
     return res.status(403).json({
       error: 'please provide password',
