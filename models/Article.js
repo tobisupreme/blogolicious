@@ -37,13 +37,23 @@ const articleSchema = new mongoose.Schema(
 articleSchema.pre('save', function (next) {
   let article = this
 
-  // do nothing if the article body is unchanged
-  if (!article.isModified('body')) return next()
-
   // calculate the time in minutes
   const timeToRead = readingTime(this.body)
 
   article.reading_time = timeToRead
+  next()
+})
+
+// calculate reading time before updating document
+articleSchema.pre('findOneAndUpdate', function (next) {
+  let article = this._update
+
+  // calculate the time in minutes
+  if (article.body) {
+    const timeToRead = readingTime(article.body)
+    article.reading_time = timeToRead
+  }
+
   next()
 })
 

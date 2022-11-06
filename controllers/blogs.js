@@ -35,6 +35,7 @@ const getBlogs = async (req, res, next) => {
   try {
     const blogs = await Blog
       .find(req.findFilter)
+      .sort(req.sort)
       .select(req.fields)
       .populate('author', { username: 1 })
       .skip(req.pagination.start)
@@ -59,10 +60,17 @@ const getBlog = async (req, res, next) => {
     const blog = await Blog.findById(id).populate('author', { username: 1 })
 
     if (blog.state !== 'published') {
-      return res.status(403).json({
-        status: false,
-        error: 'Requested article is not published',
-      })
+      const response = (res) => {
+        return res.status(403).json({
+          status: false,
+          error: 'Requested article is not published',
+        })
+      }
+      if (!req.user) {
+        return response(res)
+      } else if (blog.author._id.toString() !== req.user.id.toString()) {
+        return response(res)
+      }
     }
 
     // update blog read count
@@ -79,8 +87,55 @@ const getBlog = async (req, res, next) => {
   }
 }
 
+const updateBlogState = async (req, res, next) => {
+  try {
+    let { state } = req.body
+
+    if (!(state && (state.toLowerCase() === 'published' || state.toLowerCase() === 'draft'))) {
+      throw new Error('Please provide a valid state')
+    }
+
+    const blog = await Blog.findByIdAndUpdate(req.params.id, { state: state.toLowerCase() }, { new: true, runValidators: true, context: 'query' })
+
+    return res.json({
+      status: 'ok',
+      data: blog
+    })
+  } catch (err) {
+    err.source = 'update blog'
+    next(err)
+  }
+}
+
+const updateBlog = async (req, res, next) => {
+  try {
+    let blogUpdate = { ...req.body }
+
+    if (blogUpdate.state) delete blogUpdate.state
+
+    const blog = await Blog.findByIdAndUpdate(req.params.id, blogUpdate, { new: true, runValidators: true, context: 'query' })
+
+    if (!blog) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'Blog not found'
+      })
+    }
+
+    return res.json({
+      status: 'ok',
+      data: blog
+    })
+  } catch (err) {
+    err.source = 'update blog'
+    next(err)
+  }
+}
+
 module.exports = {
   createBlog,
   getBlogs,
   getBlog,
+  updateBlog,
+  updateBlogState,
 }

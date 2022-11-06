@@ -1,16 +1,20 @@
 const router = require('express').Router()
-const { createBlog, getBlogs, getBlog } = require('../controllers/blogs')
+const blogController = require('../controllers/blogs')
 const { filterAndSort, filterByPublished, list, setUserFilter } = require('../middleware/apiFeatures')
-const getUserFromToken = require('../middleware/verifyUser')
+const { getUserFromToken, attachUser } = require('../middleware/verifyUser')
 const pagination = require('../middleware/pagination')
+const isCreator = require('../middleware/isCreator')
 
 router.route('/')
-  .get(filterAndSort, filterByPublished, pagination, list, getBlogs)
-  .post(getUserFromToken, createBlog)
+  .get(filterAndSort, filterByPublished, pagination, list, blogController.getBlogs)
+  .post(getUserFromToken, blogController.createBlog)
 
 router.route('/p')
-  .get(getUserFromToken, filterAndSort, setUserFilter, pagination, getBlogs)
+  .get(getUserFromToken, filterAndSort, setUserFilter, pagination, blogController.getBlogs)
 
-router.route('/:id').get(getBlog)
+router.route('/:id')
+  .get(attachUser, blogController.getBlog)
+  .patch(getUserFromToken, isCreator, blogController.updateBlogState)
+  .put(getUserFromToken, isCreator, blogController.updateBlog)
 
 module.exports = router
