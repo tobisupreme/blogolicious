@@ -176,6 +176,10 @@ npm run test
 
 ## Usage
 
+### Base URL
+
+- https://blogolicious.cyclic.app
+
 ### Creating a user
 
 - Route: /api/signup
@@ -231,7 +235,7 @@ npm run test
 
 ```json
 {
-  "token": { token },
+  "token": {token},
   "username": "mightyjoe",
   "name": "John"
 }
@@ -306,12 +310,12 @@ npm run test
     ```text
     /api/blog?title=Title
     ```
-    - tags: Separate multiple values with a comma, `,`. 
+    - tags: Separate multiple values with a comma 
     ```text
     /api/blog?tags=sql,database
     ```
 
-  - Sort: Sort returned response by passing values matching the fields in the blog to the `orderby` parameter. To sort in descending order, add a `-` prefix. Separate multiple values with a comma, `,`.
+  - Sort: Sort returned response by passing values matching the fields in the blog to the `orderby` parameter. To sort in descending order, add a `-` prefix. Separate multiple values with a comma
   
     Acceptable values include:
     - author
@@ -322,7 +326,7 @@ npm run test
       /api/blog?orderby=title,-read_count
       ```
 
-  - Fields: Set the fields to display in the returned response by passing values matching the fields in the blog to the `fields` parameter. To omit any fields, add a `-` prefix. Separate multiple values with a comma, `,`.
+  - Fields: Set the fields to display in the returned response by passing values matching the fields in the blog to the `fields` parameter. To omit any fields, add a `-` prefix. Separate multiple values with a comma
   
     Default fields are `title` and `tags`. Acceptable values include:
     - author
@@ -364,12 +368,12 @@ npm run test
     ```text
     /api/blog?title=Title
     ```
-    - tags: Separate multiple values with a comma, `,`. 
+    - tags: Separate multiple values with a comma 
     ```text
     /api/blog?tags=sql,database
     ```
 
-  - Sort: Sort returned response by passing values matching the fields in the blog to the `orderby` parameter. To sort in descending order, add a `-` prefix. Separate multiple values with a comma, `,`.
+  - Sort: Sort returned response by passing values matching the fields in the blog to the `orderby` parameter. To sort in descending order, add a `-` prefix. Separate multiple values with a comma
   
     Acceptable values include:
     - title
@@ -379,7 +383,7 @@ npm run test
       /api/blog?orderby=title,-read_count
       ```
 
-  - Fields: Set the fields to display in the returned response by passing values matching the fields in the blog to the `fields` parameter. To omit any fields, add a `-` prefix. Separate multiple values with a comma, `,`.
+  - Fields: Set the fields to display in the returned response by passing values matching the fields in the blog to the `fields` parameter. To omit any fields, add a `-` prefix. Separate multiple values with a comma
   
     Default fields are `title` and `tags`. Acceptable values include:
     - author
@@ -577,6 +581,7 @@ This project was made possible by:
 - [Dr Austin Wopara's Ze Blog](https://github.com/Ze-Austin/ze-blog)
 - [Othneil Drew's README Template](https://github.com/othneildrew/Best-README-Template)
 - [Ileriayo's Markdown Badges](https://github.com/Ileriayo/markdown-badges)
+- [markdown-emojis](https://github.com/markdown-templates/markdown-emojis)
 
 <p align="right"><a href="#readme-top">back to top</a></p>
 <!-- Markdown Links & Images -->
