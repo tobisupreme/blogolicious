@@ -241,6 +241,130 @@ npm run test
 
 ---
 
+### Create a Blog
+
+- Route: /api/blog
+- Method: POST
+- Header
+  - Authorization: Bearer {token}
+
+:point_down: Body
+
+```json
+{
+  "title": "The Adventures of John",
+  "tags": ["memoirs", "expose", "fun"],
+  "description": "Fun times as Johnny",
+  "body": "A very fun article that is long enough to be fun, and short enough to be ..fun!"
+}
+```
+
+:point_down: Response
+
+```json
+{
+  "status": "success",
+  "data": {
+    "title": "The Adventures of John",
+    "description": "Fun times as Johnny",
+    "author": "6367c296ba7522bd8561e4f6",
+    "state": "draft",
+    "read_count": 0,
+    "tags": ["memoirs", "expose", "fun"],
+    "body": "A very fun article that is long enough to be fun, and short enough to be ..fun!",
+    "_id": "6367cc2271c384885108032f",
+    "createdAt": "2022-11-06T15:00:50.202Z",
+    "updatedAt": "2022-11-06T15:00:50.202Z",
+    "reading_time": 1
+  }
+}
+```
+
+<p align="right"><a href="#readme-top">back to top</a></p>
+
+---
+
+### Update the state of a Blog
+
+- Route: /api/blog/:articleId
+- Method: PATCH
+- Header
+  - Authorization: Bearer {token}
+
+:point_down: Body
+
+```json
+{
+  "state": "published"
+}
+```
+
+:point_down: Response
+
+```json
+{
+  "status": "success",
+  "data": {
+    "_id": "6367cc2271c384885108032f",
+    "title": "The Adventures of John",
+    "description": "Fun times as Johnny",
+    "author": "6367c296ba7522bd8561e4f6",
+    "state": "published",
+    "read_count": 0,
+    "tags": ["memoirs", "expose", "fun"],
+    "body": "A very fun article that is long enough to be fun, and short enough to be ..fun!",
+    "createdAt": "2022-11-06T15:00:50.202Z",
+    "updatedAt": "2022-11-06T16:17:45.137Z",
+    "reading_time": 1
+  }
+}
+```
+
+<p align="right"><a href="#readme-top">back to top</a></p>
+
+---
+
+### Update the contents of a Blog
+
+- Route: /api/blog/:articleId
+- Method: PUT
+- Header
+  - Authorization: Bearer {token}
+
+:point_down: Body
+
+```json
+{
+  "tags": ["memoirs", "expose"],
+  "body": "A very fun article that is long enough to be fun, and short enough to be ..fun! A sailor went to sea to see what he could see but all that he could see was the bottom of the deep blue sea."
+}
+```
+
+:point_down: Response
+
+```json
+{
+  "status": "success",
+  "data": {
+    "_id": "6367cc2271c384885108032f",
+    "title": "The Adventures of John",
+    "description": "Fun times as Johnny",
+    "author": "6367c296ba7522bd8561e4f6",
+    "state": "published",
+    "read_count": 0,
+    "tags": ["memoirs", "expose"],
+    "body": "A very fun article that is long enough to be fun, and short enough to be ..fun! A sailor went to sea to see what he could see but all that he could see was the bottom of the deep blue sea.",
+    "createdAt": "2022-11-06T15:00:50.202Z",
+    "updatedAt": "2022-11-06T16:22:29.326Z",
+    "reading_time": 1
+  }
+}
+```
+
+<p align="right"><a href="#readme-top">back to top</a></p>
+
+---
+
 ## Lessons Learned
 
 While building this project, I learned about:
