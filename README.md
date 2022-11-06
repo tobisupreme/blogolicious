@@ -174,6 +174,73 @@ npm run test
 
 ---
 
+## Usage
+
+### Creating a user
+
+- Route: /api/signup
+- Method: POST
+
+:point_down: Body
+
+```json
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "username": "mightyjoe",
+  "email": "joe@mail.com",
+  "password": "Password0!"
+}
+```
+
+:point_down: Response
+
+```json
+{
+  "status": "success",
+  "data": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "username": "mightyjoe",
+    "email": "joe@mail.com",
+    "articles": [],
+    "_id": "6367c296ba7522bd8561e4f6"
+  }
+}
+```
+
+<p align="right"><a href="#readme-top">back to top</a></p>
+
+---
+
+### Logging in
+
+- Route: /api/login
+- Method: POST
+
+:point_down: Body
+
+```json
+{
+  "username": "mightyjoe",
+  "password": "Password0!"
+}
+```
+
+:point_down: Response
+
+```json
+{
+  "token": { token },
+  "username": "mightyjoe",
+  "name": "John"
+}
+```
+
+<p align="right"><a href="#readme-top">back to top</a></p>
+
+---
+
 ## Lessons Learned
 
 While building this project, I learned about:
