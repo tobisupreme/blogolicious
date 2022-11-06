@@ -5,12 +5,16 @@ const unknownEndpoint = require('./middleware/unknownEndpoint')
 const signup = require('./routes/signup')
 const login = require('./controllers/login')
 const blog = require('./routes/blog')
+const cors = require('cors')
 const { requestLogger } = require('./utils/logger')
 
 const app = express()
 
 // connect to db
 require('./middleware/db')(CONFIG.DBURI)
+
+// allow requests from all origins
+app.use(cors())
 
 // parse information from request
 app.use(express.json())
@@ -23,7 +27,7 @@ app.use(requestLogger)
 app.get('/', (req, res) => {
   res.json({
     status: 'status',
-    message: 'Visit the link below for details about usage',
+    message: 'Visit the following link(s) for details about usage',
     link: 'https://github.com/tobisupreme/blogolicious#usage',
     readme: 'https://github.com/tobisupreme/blogolicious#readme',
   })
