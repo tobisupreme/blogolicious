@@ -53,6 +53,7 @@
 <!-- AltSchool Requirements -->
 
 ## Requirements
+
 <details>
 
 <summary> <strong>Requirements for the examination project</strong> </summary>
@@ -101,11 +102,77 @@
 
 - [x] Write tests for all endpoints
 
+<p align="right"><a href="#readme-top">back to top</a></p>
+
+---
+
 </details>
 
 <br>
 
-<!-- Lessons from the Project -->
+## Development
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/en/download/)
+- [MongoDB](https://www.mongodb.com/docs/manual/installation/)
+
+#### Clone this repo
+
+```sh
+git clone https://github.com/tobisupreme/blogolicious.git
+```
+
+#### Install project dependencies
+
+```sh
+npm install
+```
+
+#### Update .env with [example.env](https://github.com/tobisupreme/blogolicious/blob/main/example.env)
+
+#### Run a development server
+
+```sh
+npm run dev
+```
+
+#### For testing, run
+
+```sh
+npm run test
+```
+
+### Models
+
+#### User
+
+| field     | data_type     | constraints      |
+| --------- | ------------- | ---------------- |
+| username  | string        | required, unique |
+| firstName | string        | required         |
+| lastName  | string        | required         |
+| email     | string        | required, unique |
+| password  | string        | required         |
+| articles  | ref - Article |                  |
+
+#### Article
+
+| field        | data_type  | constraints                                              |
+| ------------ | ---------- | -------------------------------------------------------- |
+| title        | string     | required, unique                                         |
+| description  | string     | optional                                                 |
+| author       | ref - User |                                                          |
+| owner        | string     |                                                          |
+| state        | string     | required, default: 'draft', enum: ['draft', 'published'] |
+| read_count   | Number     | default: 0                                               |
+| reading_time | Number     |                                                          |
+| tags         | array      | optional                                                 |
+| body         | string     | required                                                 |
+
+<p align="right"><a href="#readme-top">back to top</a></p>
+
+---
 
 ## Lessons Learned
 
