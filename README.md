@@ -31,7 +31,7 @@
 
 ## Blogolicious
 
-&mdash; a wonderful Blogging API built as an exam project by <a href="https://www.github.com/tobisupreme">tobisupreme</a>, a Backend Engineering student at <a href="https://altschoolafrica.com/schools/engineering">AltSchool Africa</a>.
+&mdash; a wonderful Blogging API built by <a href="https://www.github.com/tobisupreme">tobisupreme</a>.
 
 <p align="right"><a href="#readme-top">back to top</a></p>
 
@@ -129,18 +129,36 @@ git clone https://github.com/tobisupreme/blogolicious.git
 npm install
 ```
 
+or
+
+```sh
+yarn install
+```
+
 #### Update .env with [example.env](https://github.com/tobisupreme/blogolicious/blob/main/example.env)
 
 #### Run a development server
 
 ```sh
-npm run dev
+npm run start:dev
+```
+
+or
+
+```sh
+yarn run start:dev
 ```
 
 #### For testing, run
 
 ```sh
 npm run test
+```
+
+or
+
+```sh
+yarn run test
 ```
 
 ### Models
